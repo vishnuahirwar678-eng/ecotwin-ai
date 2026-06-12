@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
 import Calculator from '../pages/Calculator';
@@ -11,12 +11,13 @@ vi.mock('../context/AuthContext', () => ({
   }),
 }));
 
-vi.mock('../lib/supabase', () => ({
+vi.mock('../services/supabase', () => ({
   supabase: {
     from: () => ({
       insert: vi.fn().mockResolvedValue({ error: null }),
     }),
   },
+  isSupabaseConfigured: true,
 }));
 
 function renderCalculator() {

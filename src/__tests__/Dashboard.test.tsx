@@ -9,8 +9,7 @@ vi.mock('../context/AuthContext', () => ({
   }),
 }));
 
-// Return empty data - triggers empty state path (no charts rendered)
-vi.mock('../lib/supabase', () => ({
+vi.mock('../services/supabase', () => ({
   supabase: {
     from: () => ({
       select: vi.fn().mockReturnValue({
@@ -20,6 +19,7 @@ vi.mock('../lib/supabase', () => ({
       }),
     }),
   },
+  isSupabaseConfigured: true,
 }));
 
 import Dashboard from '../pages/Dashboard';

@@ -1,5 +1,20 @@
+/**
+ * Category configuration and constants.
+ * Calculation functions are in src/utils/emissions.ts (pure, testable).
+ */
+
 import { Car, Zap, UtensilsCrossed, ShoppingBag } from 'lucide-react';
-import type { CarbonCategory, CategoryConfig, EmissionItem, SustainabilityScore } from '../types';
+import type { CarbonCategory, CategoryConfig, EmissionItem } from '../types';
+
+// Re-export pure functions for backward compatibility
+export {
+  calculateSustainabilityScore,
+  projectAnnualEmissions,
+  treesNeededForOffset,
+  flightEquivalents,
+  carKmEquivalents,
+  AVG_MONTHLY_KG,
+} from '../utils/emissions';
 
 const transportItems: EmissionItem[] = [
   { label: 'Car (gasoline) – 10 km', co2: 1.9, unit: 'kg CO2e', source: 'EPA GHG Equivalencies' },
@@ -100,44 +115,4 @@ export const CATEGORY_LABELS: Record<CarbonCategory, string> = {
   shopping: 'Shopping',
 };
 
-export const ALL_CATEGORIES: CarbonCategory[] = ['transport', 'energy', 'food', 'shopping'];
-
-export const AVG_MONTHLY_KG = {
-  us: 750,
-  eu: 450,
-  global: 390,
-};
-
-export function calculateSustainabilityScore(monthlyKg: number): SustainabilityScore {
-  const usAvg = AVG_MONTHLY_KG.us;
-  const ratio = monthlyKg / usAvg;
-  // Higher ratio = more emissions = lower score
-  // At ratio=0 (zero emissions), score=100; at ratio=1 (US avg), score=50; at ratio=2, score=0
-  const percentage = Math.max(0, Math.min(100, (1 - ratio) * 100));
-
-  if (percentage >= 90) return { rating: 'A+', points: 95, percentage, color: '#059669', label: 'Exceptional' };
-  if (percentage >= 75) return { rating: 'A', points: 80, percentage, color: '#10b981', label: 'Excellent' };
-  if (percentage >= 55) return { rating: 'B', points: 65, percentage, color: '#34d399', label: 'Good' };
-  if (percentage >= 35) return { rating: 'C', points: 45, percentage, color: '#f59e0b', label: 'Average' };
-  if (percentage >= 15) return { rating: 'D', points: 25, percentage, color: '#f97316', label: 'Below Average' };
-  return { rating: 'F', points: 10, percentage, color: '#ef4444', label: 'High Impact' };
-}
-
-export function projectAnnualEmissions(monthlyKg: number): number {
-  return monthlyKg * 12;
-}
-
-export function treesNeededForOffset(annualKg: number): number {
-  const kgPerTreePerYear = 22;
-  return Math.ceil(annualKg / kgPerTreePerYear);
-}
-
-export function flightEquivalents(annualKg: number): number {
-  const kgPerFlightHour = 90;
-  return Math.round(annualKg / kgPerFlightHour);
-}
-
-export function carKmEquivalents(annualKg: number): number {
-  const kgPerKm = 0.19;
-  return Math.round(annualKg / kgPerKm);
-}
+export const ALL_CATEGORIES: readonly CarbonCategory[] = ['transport', 'energy', 'food', 'shopping'];

@@ -11,7 +11,7 @@ vi.mock('../context/AuthContext', () => ({
   }),
 }));
 
-vi.mock('../lib/supabase', () => ({
+vi.mock('../services/supabase', () => ({
   supabase: {
     from: (table: string) => {
       if (table === 'coach_messages') {
@@ -31,6 +31,7 @@ vi.mock('../lib/supabase', () => ({
       };
     },
   },
+  isSupabaseConfigured: true,
 }));
 
 function renderCoach() {
